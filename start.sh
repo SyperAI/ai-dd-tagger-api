@@ -21,6 +21,10 @@ while getopts "p:l:w" opt; do
   esac
 done
 
+if [ ! -d "$LOG_PATH" ]; then
+    mkdir "$LOG_PATH"
+fi
+
 source ./venv/bin/activate
 gunicorn -w "$WORKERS" -b localhost:"$PORT" \
 --access-logfile "$LOG_PATH"/access.log \
