@@ -12,6 +12,12 @@ JUNK_TAGS = ['rating:explicit', 'rating:safe', 'rating:questionable']
 app = Flask(__name__)
 client = Client("hysts/DeepDanbooru")
 
+from werkzeug.middleware.proxy_fix import ProxyFix
+
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1
+)
+
 @app.route('/')
 def hello_world():  # put application's code here
     return jsonify({
