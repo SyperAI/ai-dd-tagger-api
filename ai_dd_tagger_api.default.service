@@ -1,0 +1,15 @@
+[Unit]
+Description=AI DeepDanbooru tagger API
+After=network.target
+
+[Service]
+User=
+Group=
+WorkingDirectory=
+# Add -p <port> -l <path to logs dir> -w <workers amount> if you dont want to use default (-p 5000 -l "/var/log" -w 4)
+ExecStart=./start.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
