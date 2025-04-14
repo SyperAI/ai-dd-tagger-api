@@ -6,8 +6,9 @@ After=network.target
 User=
 Group=
 WorkingDirectory=
+ExecStartPre=chmod +x start.sh
 # Add -p <port> -l <path to logs dir> -w <workers amount> if you dont want to use default (-p 5000 -l "/var/log" -w 4)
-ExecStart=./start.sh
+ExecStart=your_path_here/start.sh
 Restart=on-failure
 RestartSec=5
 
