@@ -2,12 +2,12 @@ import os
 import tempfile
 from pathlib import Path
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from gradio_client import Client, handle_file
 
 
 JUNK_TAGS = ['rating:explicit', 'rating:safe', 'rating:questionable']
-
+ALLOWED_ORIGINS = {"https://rule34.gg", "127.0.0.1", }
 
 app = Flask(__name__)
 client = Client("hysts/DeepDanbooru")
@@ -72,6 +72,31 @@ def predict():
     })
 
 
+@app.before_request
+def before_request():
+    try:
+        request.remote_addr = request.environ['HTTP_X_FORWARDED_FOR'].split(", ")[0]
+    except KeyError:
+        pass
+
+    origin = request.headers.get('Origin', default=request.remote_addr)
+    if origin not in ALLOWED_ORIGINS and request.remote_addr not in ALLOWED_ORIGINS:
+        abort(403, description='Origin not allowed')
+
+
+@app.after_request
+def after_request(response):
+    origin = request.headers.get('Origin', default=request.remote_addr)
+    if request.headers.get('Origin') in ALLOWED_ORIGINS or request.remote_addr in ALLOWED_ORIGINS:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Vary'] = 'Origin'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Headers'] = \
+            'Content-Type, Authorization, X-Requested-With'
+        response.headers['Access-Control-Allow-Methods'] = \
+            'GET, PUT, OPTIONS'
+
+    return response
 
 
 if __name__ == '__main__':
