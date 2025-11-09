@@ -7,7 +7,7 @@ from gradio_client import Client, handle_file
 
 
 JUNK_TAGS = ['rating:explicit', 'rating:safe', 'rating:questionable']
-ALLOWED_ORIGINS = {"https://rule34.gg", "127.0.0.1", }
+ALLOWED_ORIGINS = {"https://rule34.gg", "127.0.0.1", "http://127.0.0.1:8080"}
 
 app = Flask(__name__)
 client = Client("hysts/DeepDanbooru")
